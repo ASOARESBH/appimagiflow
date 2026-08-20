@@ -10,6 +10,7 @@ class NotificationsScreen extends StatelessWidget {
         title: 'Notificações',
         path: '/api/mobile/v1/notificacoes',
         itemTitle: (item) => '${item['titulo'] ?? 'Notificação'}',
-        itemSubtitle: (item) => '${item['mensagem'] ?? ''} · ${item['created_at'] ?? ''}',
+        itemSubtitle: (item) =>
+            '${item['mensagem'] ?? ''} · ${item['created_at'] ?? ''}',
       );
 }

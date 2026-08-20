@@ -3,7 +3,8 @@ import 'dart:convert';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureSessionStore {
-  SecureSessionStore([FlutterSecureStorage? storage]) : _storage = storage ?? const FlutterSecureStorage();
+  SecureSessionStore([FlutterSecureStorage? storage])
+      : _storage = storage ?? const FlutterSecureStorage();
 
   final FlutterSecureStorage _storage;
   static const _baseUrlKey = 'imagiflow.base_url';
@@ -12,10 +13,12 @@ class SecureSessionStore {
   static const _biometricEnabledKey = 'imagiflow.biometric_enabled';
 
   Future<String?> baseUrl() => _storage.read(key: _baseUrlKey);
-  Future<void> saveBaseUrl(String value) => _storage.write(key: _baseUrlKey, value: value.trim().replaceAll(RegExp(r'/$'), ''));
+  Future<void> saveBaseUrl(String value) => _storage.write(
+      key: _baseUrlKey, value: value.trim().replaceAll(RegExp(r'/$'), ''));
 
   Future<String?> accessToken() => _storage.read(key: _accessTokenKey);
-  Future<void> saveAccessToken(String value) => _storage.write(key: _accessTokenKey, value: value);
+  Future<void> saveAccessToken(String value) =>
+      _storage.write(key: _accessTokenKey, value: value);
 
   Future<Map<String, dynamic>?> profile() async {
     final raw = await _storage.read(key: _profileKey);
@@ -28,10 +31,13 @@ class SecureSessionStore {
     }
   }
 
-  Future<void> saveProfile(Map<String, dynamic> value) => _storage.write(key: _profileKey, value: jsonEncode(value));
+  Future<void> saveProfile(Map<String, dynamic> value) =>
+      _storage.write(key: _profileKey, value: jsonEncode(value));
 
-  Future<bool> biometricEnabled() async => (await _storage.read(key: _biometricEnabledKey)) == 'true';
-  Future<void> setBiometricEnabled(bool value) => _storage.write(key: _biometricEnabledKey, value: value.toString());
+  Future<bool> biometricEnabled() async =>
+      (await _storage.read(key: _biometricEnabledKey)) == 'true';
+  Future<void> setBiometricEnabled(bool value) =>
+      _storage.write(key: _biometricEnabledKey, value: value.toString());
 
   Future<void> clearSession({bool clearTenant = false}) async {
     await _storage.delete(key: _accessTokenKey);

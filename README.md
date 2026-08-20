@@ -1,26 +1,24 @@
 # ImagiFlow Mobile
 
-Este diretório contém o cliente **Flutter** do ERP ImagiFlow para Android e iOS. O aplicativo foi estruturado para usar uma URL própria por empresa, autenticação por token Bearer, armazenamento seguro, segundo fator, módulos condicionados por permissão e geolocalização apenas em eventos de campo autorizados.
+O repositório contém o cliente **Flutter** do ERP ImagiFlow para Android e iOS. O aplicativo usa uma URL própria por empresa, autenticação por token Bearer, segundo fator, armazenamento seguro, biometria local opcional, permissões de módulo e geolocalização apenas em ações de campo consentidas.
 
-## Preparação das plataformas nativas
+## Pronto para Android Studio
 
-O ambiente de desenvolvimento deve ter o SDK Flutter estável instalado. A partir deste diretório, execute o comando abaixo uma única vez para gerar os diretórios nativos que não são versionados nesta entrega:
+Os diretórios nativos `android/` e `ios/` já estão versionados. No Android, o projeto possui Gradle Wrapper, namespace e identificador `br.com.imagiflow.app`, atividade compatível com biometria (`FlutterFragmentActivity`) e permissões declaradas para localização, câmera e imagens.
 
-```bash
-flutter create --platforms=android,ios .
-flutter pub get
-```
+> Para teste local, abra **a raiz deste repositório** no Android Studio — não abra apenas a pasta `android/`. Instale os plugins **Flutter** e **Dart** quando solicitado.
 
-Depois da geração, acrescente as permissões abaixo aos manifests nativos. A solicitação é pontual: o aplicativo não inicia rastreamento contínuo e não solicita localização em segundo plano.
+| Requisito | Configuração no Android Studio |
+|---|---|
+| Flutter SDK | Em **Settings → Languages & Frameworks → Flutter**, selecione a pasta do SDK Flutter. |
+| Android SDK | Em **Settings → Android SDK**, instale uma plataforma Android recente, Build Tools, Platform Tools e Emulator. |
+| Emulador | Em **Device Manager**, crie um dispositivo virtual com Google APIs e inicie-o. |
+| Dependências | Execute `flutter pub get` pelo terminal integrado ou aguarde a sincronização Flutter. |
+| Execução | Selecione o emulador e clique em **Run**; alternativamente, execute `flutter run`. |
 
-| Plataforma | Arquivo | Configuração necessária |
-|---|---|---|
-| Android | `android/app/src/main/AndroidManifest.xml` | `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`, `CAMERA` e `READ_MEDIA_IMAGES` quando aplicável. |
-| iOS | `ios/Runner/Info.plist` | `NSLocationWhenInUseUsageDescription`, `NSCameraUsageDescription` e `NSPhotoLibraryUsageDescription`, com textos claros de finalidade. |
+## Verificações antes do primeiro teste
 
-## Execução e qualidade
-
-Configure um emulador ou dispositivo, valide as dependências e inicie o aplicativo.
+Na raiz do projeto, execute:
 
 ```bash
 flutter analyze
@@ -28,7 +26,28 @@ flutter test
 flutter run
 ```
 
-A base da empresa é informada pelo usuário, normalizada para HTTPS e validada no endpoint `GET /api/mobile/v1/tenant/ping` antes de qualquer credencial ser enviada. O token de sessão fica somente em `flutter_secure_storage`; ele não é gravado no banco local nem em preferências comuns.
+Para validar a geração do pacote Android de depuração, execute:
+
+```bash
+flutter build apk --debug
+```
+
+O APK será gerado em `build/app/outputs/flutter-apk/app-debug.apk`.
+
+## Permissões móveis
+
+A solicitação de localização é pontual: o aplicativo não configura rastreamento contínuo nem acesso em segundo plano.
+
+| Plataforma | Arquivo | Permissões configuradas ou necessárias |
+|---|---|---|
+| Android | `android/app/src/main/AndroidManifest.xml` | `ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`, `CAMERA` e `READ_MEDIA_IMAGES`. |
+| iOS | `ios/Runner/Info.plist` | Antes de publicar iOS, incluir `NSLocationWhenInUseUsageDescription`, `NSCameraUsageDescription` e `NSPhotoLibraryUsageDescription` com textos claros de finalidade. |
+
+## Fluxo de homologação
+
+Ao abrir o aplicativo, informe o domínio da empresa de homologação. Ele é normalizado para HTTPS e validado em `GET /api/mobile/v1/tenant/ping` antes que qualquer credencial seja enviada. O token de sessão fica apenas em `flutter_secure_storage`; não é salvo em preferências comuns.
+
+Teste obrigatoriamente os fluxos de domínio inválido, falha de rede, login inválido, segundo fator, sessão expirada, autorização insuficiente e localização negada. Use uma conta de homologação, sem dados pessoais ou financeiros de produção.
 
 ## Módulos entregues
 
@@ -44,4 +63,4 @@ A base da empresa é informada pelo usuário, normalizada para HTTPS e validada 
 
 ## Contrato da API
 
-Consulte [`../../docs/API_MOBILE_E_APP_FLUTTER.md`](../../docs/API_MOBILE_E_APP_FLUTTER.md) para a referência de endpoints, envelopes JSON e regras de segurança. O aplicativo trata respostas `401`, `403`, `422` e falhas de conectividade de forma explícita, sem interpretar mensagens HTML como sucesso.
+Consulte `.claude/skills/appimagiflow-context-engine/references/api-mobile.md` para o resumo de endpoints, envelopes JSON e regras de segurança. O aplicativo trata respostas `401`, `403`, `422` e falhas de conectividade sem interpretar páginas HTML como sucesso.

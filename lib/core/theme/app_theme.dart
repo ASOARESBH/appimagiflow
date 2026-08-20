@@ -33,19 +33,27 @@ ThemeData buildAppTheme() {
       elevation: 0,
       surfaceTintColor: Colors.transparent,
     ),
-    inputDecorationTheme: InputDecorationTheme(
+    inputDecorationTheme: const InputDecorationTheme(
       filled: true,
       fillColor: AppColors.surface,
-      border: OutlineInputBorder(borderRadius: AppRadii.input, borderSide: const BorderSide(color: AppColors.border)),
-      enabledBorder: OutlineInputBorder(borderRadius: AppRadii.input, borderSide: const BorderSide(color: AppColors.border)),
-      focusedBorder: OutlineInputBorder(borderRadius: AppRadii.input, borderSide: const BorderSide(color: AppColors.primary, width: 2)),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
-      labelStyle: const TextStyle(color: AppColors.muted),
+      border: OutlineInputBorder(
+          borderRadius: AppRadii.input,
+          borderSide: BorderSide(color: AppColors.border)),
+      enabledBorder: OutlineInputBorder(
+          borderRadius: AppRadii.input,
+          borderSide: BorderSide(color: AppColors.border)),
+      focusedBorder: OutlineInputBorder(
+          borderRadius: AppRadii.input,
+          borderSide: BorderSide(color: AppColors.primary, width: 2)),
+      contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      labelStyle: TextStyle(color: AppColors.muted),
     ),
-    cardTheme: const CardTheme(
+    cardTheme: const CardThemeData(
       elevation: 0,
       color: AppColors.surface,
-      shape: RoundedRectangleBorder(borderRadius: AppRadii.card, side: BorderSide(color: Color(0x11000000))),
+      shape: RoundedRectangleBorder(
+          borderRadius: AppRadii.card,
+          side: BorderSide(color: Color(0x11000000))),
       margin: EdgeInsets.zero,
     ),
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -59,7 +67,8 @@ ThemeData buildAppTheme() {
     ),
     navigationBarTheme: const NavigationBarThemeData(
       indicatorColor: Color(0x1F00529B),
-      labelTextStyle: WidgetStatePropertyAll(TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
+      labelTextStyle: WidgetStatePropertyAll(
+          TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
     ),
   );
 }

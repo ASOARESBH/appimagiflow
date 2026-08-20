@@ -23,13 +23,16 @@ class ImagiFlowApiClient {
   final SecureSessionStore _store;
   final Dio _dio;
 
-  Future<Map<String, dynamic>> get(String path, {Map<String, dynamic>? query, bool authenticated = true}) =>
+  Future<Map<String, dynamic>> get(String path,
+          {Map<String, dynamic>? query, bool authenticated = true}) =>
       _request('GET', path, query: query, authenticated: authenticated);
 
-  Future<Map<String, dynamic>> post(String path, {Object? data, bool authenticated = true}) =>
+  Future<Map<String, dynamic>> post(String path,
+          {Object? data, bool authenticated = true}) =>
       _request('POST', path, data: data, authenticated: authenticated);
 
-  Future<Map<String, dynamic>> upload(String path, FormData data) => _request('POST', path, data: data);
+  Future<Map<String, dynamic>> upload(String path, FormData data) =>
+      _request('POST', path, data: data);
 
   Future<Map<String, dynamic>> _request(
     String method,
@@ -39,12 +42,17 @@ class ImagiFlowApiClient {
     bool authenticated = true,
   }) async {
     final baseUrl = await _store.baseUrl();
-    if (baseUrl == null || baseUrl.isEmpty) throw ApiFailure('Informe a empresa antes de continuar.');
+    if (baseUrl == null || baseUrl.isEmpty) {
+      throw ApiFailure('Informe a empresa antes de continuar.');
+    }
 
     final headers = <String, dynamic>{};
     if (authenticated) {
       final token = await _store.accessToken();
-      if (token == null || token.isEmpty) throw ApiFailure('Sua sessão expirou. Entre novamente.', statusCode: 401);
+      if (token == null || token.isEmpty) {
+        throw ApiFailure('Sua sessão expirou. Entre novamente.',
+            statusCode: 401);
+      }
       headers[HttpHeaders.authorizationHeader] = 'Bearer $token';
     }
 
@@ -58,16 +66,25 @@ class ImagiFlowApiClient {
       return _decode(response.data, response.statusCode);
     } on DioException catch (exception) {
       final data = exception.response?.data;
-      if (data is Map) return _decode(Map<String, dynamic>.from(data), exception.response?.statusCode);
-      if (exception.type == DioExceptionType.connectionError || exception.type == DioExceptionType.connectionTimeout) {
-        throw ApiFailure('Sem conexão com a empresa. Confira sua internet e tente novamente.');
+      if (data is Map) {
+        return _decode(
+            Map<String, dynamic>.from(data), exception.response?.statusCode);
       }
-      throw ApiFailure('Não foi possível comunicar com o ERP.', statusCode: exception.response?.statusCode);
+      if (exception.type == DioExceptionType.connectionError ||
+          exception.type == DioExceptionType.connectionTimeout) {
+        throw ApiFailure(
+            'Sem conexão com a empresa. Confira sua internet e tente novamente.');
+      }
+      throw ApiFailure('Não foi possível comunicar com o ERP.',
+          statusCode: exception.response?.statusCode);
     }
   }
 
   Map<String, dynamic> _decode(dynamic raw, int? statusCode) {
-    if (raw is! Map) throw ApiFailure('Resposta inválida do servidor.', statusCode: statusCode);
+    if (raw is! Map) {
+      throw ApiFailure('Resposta inválida do servidor.',
+          statusCode: statusCode);
+    }
     final response = Map<String, dynamic>.from(raw);
     if (response['success'] == true) {
       final data = response['data'];
@@ -78,9 +95,13 @@ class ImagiFlowApiClient {
     final errors = <String, List<String>>{};
     if (rawErrors is Map) {
       rawErrors.forEach((key, value) {
-        errors['$key'] = value is List ? value.map((item) => '$item').toList() : ['$value'];
+        errors['$key'] =
+            value is List ? value.map((item) => '$item').toList() : ['$value'];
       });
     }
-    throw ApiFailure('${response['message'] ?? 'Não foi possível concluir a solicitação.'}', statusCode: statusCode, errors: errors);
+    throw ApiFailure(
+        '${response['message'] ?? 'Não foi possível concluir a solicitação.'}',
+        statusCode: statusCode,
+        errors: errors);
   }
 }

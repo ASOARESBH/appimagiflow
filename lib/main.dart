@@ -33,7 +33,11 @@ class _ImagiFlowAppState extends ConsumerState<ImagiFlowApp> {
       title: 'ImagiFlow',
       debugShowCheckedModeBanner: false,
       theme: buildAppTheme(),
-      home: switch ((session.initializing, session.baseUrl, session.authenticated)) {
+      home: switch ((
+        session.initializing,
+        session.baseUrl,
+        session.authenticated
+      )) {
         (true, _, _) => const _SplashScreen(),
         (false, null, _) => const TenantScreen(),
         (false, _, true) => const DashboardScreen(),
@@ -50,9 +54,14 @@ class _SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) => const Scaffold(
         body: Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            Image(image: AssetImage('assets/branding/logo-imagiflow.png'), width: 160),
+            Image(
+                image: AssetImage('assets/branding/logo-imagiflow.png'),
+                width: 160),
             SizedBox(height: 24),
-            SizedBox(width: 24, height: 24, child: CircularProgressIndicator(strokeWidth: 2)),
+            SizedBox(
+                width: 24,
+                height: 24,
+                child: CircularProgressIndicator(strokeWidth: 2)),
           ]),
         ),
       );
