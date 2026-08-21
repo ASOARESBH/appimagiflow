@@ -30,6 +30,14 @@ Para também limpar o projeto, restaurar as dependências e executar a análise 
 powershell -ExecutionPolicy Bypass -File .\scripts\update-flutter.ps1 -RefreshProject
 ```
 
+Se a atualização informar que `dart-sdk` está sendo usado por outro processo, feche o Android Studio e as execuções `flutter run`. Caso seja necessário encerrar automaticamente os processos Flutter/Dart e as tarefas Gradle relacionadas, execute:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\update-flutter.ps1 -StopFlutterProcesses -StopBuildProcesses -RefreshProject
+```
+
+> O parâmetro `-StopBuildProcesses` encerra tarefas Gradle abertas; salve qualquer trabalho em outros projetos Android antes de usá-lo.
+
 ## Verificações antes do primeiro teste
 
 Na raiz do projeto, execute:
