@@ -86,7 +86,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final baseUrl = ref.watch(authControllerProvider).baseUrl ?? '';
+    final session = ref.watch(authControllerProvider);
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -102,16 +102,18 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       const Image(
                           image:
                               AssetImage('assets/branding/logo-imagiflow.png'),
-                          height: 68),
-                      const SizedBox(height: 36),
-                      Text('Entrar',
+                          height: 132),
+                      const SizedBox(height: 28),
+                      Text('Acesse sua conta',
                           style: Theme.of(context)
                               .textTheme
                               .headlineSmall
                               ?.copyWith(fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 6),
-                      Text(baseUrl.replaceFirst(RegExp(r'^https?://'), ''),
-                          style: const TextStyle(color: AppColors.muted)),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Use o mesmo e-mail e senha do sistema web. Identificaremos automaticamente sua empresa e unidade de acesso.',
+                        style: TextStyle(color: AppColors.muted),
+                      ),
                       const SizedBox(height: 26),
                       TextFormField(
                         controller: _email,
@@ -164,13 +166,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                     color: Colors.white, strokeWidth: 2))
                             : const Text('Entrar'),
                       ),
-                      TextButton.icon(
-                        onPressed: () => ref
-                            .read(authControllerProvider.notifier)
-                            .logout(changeTenant: true),
-                        icon: const Icon(Icons.domain_outlined),
-                        label: const Text('Trocar empresa'),
-                      ),
+                      if (_loading) ...[
+                        const SizedBox(height: 14),
+                        const Text(
+                          'Validando sua empresa e unidade de acesso...',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(color: AppColors.muted),
+                        ),
+                      ],
+                      if (session.error != null) ...[
+                        const SizedBox(height: 14),
+                        Text(session.error!,
+                            style: const TextStyle(color: AppColors.danger)),
+                      ],
                     ]),
               ),
             ),

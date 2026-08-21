@@ -53,13 +53,19 @@ class AuthState {
 }
 
 class AuthController extends StateNotifier<AuthState> {
+  static const sharedBaseUrl = 'https://erp.imagiflow.com.br';
+
   AuthController(this._store, this._api) : super(const AuthState());
 
   final SecureSessionStore _store;
   final ImagiFlowApiClient _api;
 
   Future<void> restore() async {
-    final baseUrl = await _store.baseUrl();
+    final storedBaseUrl = await _store.baseUrl();
+    final baseUrl = storedBaseUrl ?? sharedBaseUrl;
+    if (storedBaseUrl == null) {
+      await _store.saveBaseUrl(baseUrl);
+    }
     final token = await _store.accessToken();
     final profile = await _store.profile();
     state = AuthState(
@@ -87,6 +93,8 @@ class AuthController extends StateNotifier<AuthState> {
       required String password,
       required String deviceName,
       required String platform}) async {
+    await _store.saveBaseUrl(sharedBaseUrl);
+    state = state.copyWith(baseUrl: sharedBaseUrl, clearError: true);
     try {
       final data =
           await _api.post('/api/mobile/v1/login', authenticated: false, data: {
@@ -162,10 +170,9 @@ class AuthController extends StateNotifier<AuthState> {
     } catch (_) {
       // A limpeza local deve ocorrer mesmo sem rede ou com token já revogado.
     }
-    await _store.clearSession(clearTenant: changeTenant);
-    state = AuthState(
-        initializing: false,
-        baseUrl: changeTenant ? null : await _store.baseUrl());
+    await _store.clearSession(clearTenant: true);
+    await _store.saveBaseUrl(sharedBaseUrl);
+    state = const AuthState(initializing: false, baseUrl: sharedBaseUrl);
   }
 
   Future<void> _saveLogin(Map<String, dynamic> data) async {
