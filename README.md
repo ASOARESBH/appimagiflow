@@ -16,6 +16,20 @@ Os diretórios nativos `android/` e `ios/` já estão versionados. No Android, o
 | Dependências | Execute `flutter pub get` pelo terminal integrado ou aguarde a sincronização Flutter. |
 | Execução | Selecione o emulador e clique em **Run**; alternativamente, execute `flutter run`. |
 
+## Atualizar o Flutter no Windows
+
+Na raiz do repositório, execute o script versionado abaixo pelo PowerShell. Ele confirma a instalação, seleciona o canal estável, atualiza o SDK e exibe o diagnóstico do ambiente.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\update-flutter.ps1
+```
+
+Para também limpar o projeto, restaurar as dependências e executar a análise estática, use:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\scripts\update-flutter.ps1 -RefreshProject
+```
+
 ## Verificações antes do primeiro teste
 
 Na raiz do projeto, execute:
@@ -45,15 +59,15 @@ A solicitação de localização é pontual: o aplicativo não configura rastrea
 
 ## Fluxo de homologação
 
-Ao abrir o aplicativo, informe o domínio da empresa de homologação. Ele é normalizado para HTTPS e validado em `GET /api/mobile/v1/tenant/ping` antes que qualquer credencial seja enviada. O token de sessão fica apenas em `flutter_secure_storage`; não é salvo em preferências comuns.
+Ao abrir o aplicativo, use o mesmo e-mail e senha do sistema web. O host compartilhado resolve o vínculo ativo do usuário com a empresa antes de emitir o token móvel. O token de sessão fica apenas em `flutter_secure_storage`; não é salvo em preferências comuns.
 
-Teste obrigatoriamente os fluxos de domínio inválido, falha de rede, login inválido, segundo fator, sessão expirada, autorização insuficiente e localização negada. Use uma conta de homologação, sem dados pessoais ou financeiros de produção.
+Teste obrigatoriamente os fluxos de falha de rede, login inválido, segundo fator, sessão expirada, autorização insuficiente e localização negada. Use uma conta de homologação, sem dados pessoais ou financeiros de produção.
 
 ## Módulos entregues
 
 | Área | Integração móvel |
 |---|---|
-| Autenticação | Tenant por URL, login, recuperação de senha, 2FA, logout e biometria local opcional. |
+| Autenticação | Login unificado por e-mail e senha, empresa vinculada resolvida pelo backend, recuperação de senha, 2FA, logout e biometria local opcional. |
 | Início | KPIs, ações rápidas e módulos filtrados por permissões retornadas pela API. |
 | Cadastros | Listagens pesquisáveis de clientes e fornecedores. |
 | Financeiro | Listagens de contas a pagar e receber, além de resumo do dashboard. |
